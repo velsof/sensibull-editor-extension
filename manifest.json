@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Sensibull True-Price Injector",
+  "version": "2.0.0",
+  "description": "Enter your true off-grid entry price per leg so Sensibull's payoff chart is accurate.",
+  "permissions": ["storage"],
+  "host_permissions": ["https://web.sensibull.com/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://web.sensibull.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["injected.js"],
+      "matches": ["https://web.sensibull.com/*"]
+    }
+  ]
+}

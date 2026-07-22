@@ -1,0 +1,10 @@
+# Playwright MCP session artifacts (console logs, page snapshots)
+.playwright-mcp/
+
+# Internal AI-assisted design/plan/review docs
+docs/superpowers/
+
+# OS / editor junk
+Thumbs.db
+.DS_Store
+*.swp
