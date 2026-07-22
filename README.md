@@ -11,6 +11,14 @@ basis** — not a rounded approximation of it.
 
 ---
 
+## Demo
+
+[![Watch the demo on YouTube](docs/thumbnail.png)](https://www.youtube.com/watch?v=S0haRGGhXNU)
+
+▶️ **[Watch the demo on YouTube](https://www.youtube.com/watch?v=S0haRGGhXNU)**
+
+---
+
 ## The problem
 
 Sensibull's Strategy Builder steps and rounds each leg's entry price to the `0.05` exchange tick.
