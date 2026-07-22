@@ -109,3 +109,13 @@ consumes precise prices, this is primarily an input-layer change. See
 Not affiliated with or endorsed by Sensibull. Trading in derivatives carries risk. This tool
 corrects display/analysis figures only — always verify against your broker's records before
 making decisions.
+
+## Keywords
+
+Sensibull · Sensibull extension · Sensibull API · Sensibull option strategy builder · option
+strategy builder · payoff graph · payoff chart accuracy · true entry price · off-grid entry price ·
+exact entry price · 0.05 tick rounding · price step · stepper · cost basis · average fill price ·
+large lot low premium · NHPC · options trading · derivatives · F&O · Nifty · Bank Nifty · options
+analyzer · premium calculation · max profit loss · Chrome extension · Manifest V3 · React Redux
+injection · content script · Zerodha · Kite · Indian stock market · NSE options · WebSocket ·
+real-time data · data fetcher · Node.js · open source
