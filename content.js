@@ -83,7 +83,12 @@
     lastRenderSig = null;
   }
   function anchorNode() {
-    // insert near the leg list; fall back to body
+    // Insert near the leg list. Return null (NOT document.body) when the anchor
+    // isn't in the DOM yet: the strategy card's footer ("Multiplier" row) can mount
+    // a tick after the legs are available in Redux. Falling back to body would drop
+    // the panel at the top of the page, behind Sensibull's fixed top bar, and the
+    // signature guard would then strand it there permanently. Returning null makes
+    // renderPanel skip this pass; the MutationObserver retries once the footer mounts.
     const paras = document.querySelectorAll("p");
     for (const el of paras) {
       if (el.textContent && el.textContent.trim() === "Multiplier") {
@@ -91,28 +96,44 @@
         if (row && row.parentElement) return row.parentElement;
       }
     }
-    return document.body;
+    return null;
   }
   function renderPanel(legs) {
     const sig = legs.map((l) => l.instrumentToken + ":" + l.strike + ":" + l.action + ":" + l.quantity).join("|");
-    const existing = document.getElementById(PANEL_ID);
-    // Skip rebuild if the leg set is unchanged (prevents observer feedback loop),
-    // or if the user is currently editing a field in the panel (prevents lost keystrokes).
-    if (existing) {
+
+    // No valid anchor yet (footer not mounted) — skip this pass rather than dropping
+    // the panel into document.body behind the top bar. The observer will retry.
+    const anchor = anchorNode();
+    if (!anchor) return;
+
+    let panel = document.getElementById(PANEL_ID);
+    // Misplaced means the panel got stranded somewhere other than the current anchor
+    // (e.g. an earlier fallback, or a Sensibull re-render that moved the subtree). It
+    // must be re-anchored even when the leg signature is unchanged — this is the
+    // recovery path for the "panel stuck at the top of the page" bug.
+    const misplaced = panel && panel.parentElement !== anchor;
+
+    // Skip rebuild if the leg set is unchanged AND the panel is correctly placed
+    // (prevents the observer feedback loop), or if the user is currently editing a
+    // field in the panel (prevents lost keystrokes / lost focus).
+    if (panel) {
       const focused = document.activeElement;
-      const editingHere = focused && existing.contains(focused);
-      if (sig === lastRenderSig || editingHere) return;
+      const editingHere = focused && panel.contains(focused);
+      if (editingHere) return;
+      if (sig === lastRenderSig && !misplaced) return;
     }
     lastRenderSig = sig;
 
-    let panel = document.getElementById(PANEL_ID);
     if (!panel) {
       panel = document.createElement("div");
       panel.id = PANEL_ID;
       panel.style.cssText =
         "margin:8px 0;padding:8px 10px;border:1px solid #cfd4dc;border-radius:6px;" +
         "background:#fbfcfe;font-family:inherit;font-size:12px;color:#333;";
-      const anchor = anchorNode();
+    }
+    // Only (re)insert when the parent is wrong. Don't force first-child position on
+    // every pass — fighting React over child order would re-trigger the observer loop.
+    if (panel.parentElement !== anchor) {
       anchor.insertBefore(panel, anchor.firstChild);
     }
     panel.innerHTML = "";
